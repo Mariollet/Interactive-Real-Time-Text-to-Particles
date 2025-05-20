@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>30,000 Particles</title>
     <style>
-      @import url("https://fonts.googleapis.com/css?family=Poppins:400,600,700");
+      @import url("https://fonts.googleapis.com/css?family=Quantico");
 
       html,
       body {
@@ -85,7 +85,7 @@
         h = canvas.height = window.innerHeight;
 
         // ---- Change ici le texte, la police et la taille ----
-        var points = getTextPoints("CASSEZ LES CODES", "Poppins", Math.floor(h/4), SPACING, w, h);
+        var points = getTextPoints("CASSEZ LES CODES", "Quantico", Math.floor(h/4), SPACING, w, h);
 
         // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
