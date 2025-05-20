@@ -7,6 +7,7 @@ A playful and interactive web demo that transforms text into animated particles,
 ## Features
 
 - **Live particle animation**: Text is rendered as a cloud of interactive particles.
+- **Phrase input**: Instantly update the animated text with your own sentence (supports multi-line with `\n`).
 - **Font selection**: Choose from several Google Fonts for instant style changes.
 - **Real-time controls**: Adjust drag, ease, spacing, margin, and thickness with smooth transitions.
 - **Responsive UI**: Clean, mobile-friendly interface using Bootstrap.
@@ -41,6 +42,7 @@ A playful and interactive web demo that transforms text into animated particles,
 
 ## Usage
 
+- Use the **TEXT** input to change the animated sentence in real time (use `\n` for line breaks).
 - Use the **Font** dropdown to change the typeface.
 - Adjust **Drag** and **Ease** for fluidity of the animation.
 - Adjust **Spacing**, **Margin**, and **Thickness** to change the shape and density of the particle text.
@@ -65,7 +67,7 @@ A playful and interactive web demo that transforms text into animated particles,
 ## Customization
 
 - **Change the default text**:  
-  Edit the string in the `getTextPoints` call inside `index.php` (e.g. `"CASSEZ\nLES CODES"`).
+  Use the TEXT input in the UI, or edit the default value in the HTML (`index.php`).
 - **Add more fonts**:  
   Add options to the `<select id="fontSelect">` and update the Google Fonts link in the `<head>`.
 - **Tweak animation**:  
