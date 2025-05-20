@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KG Particles</title>
+    <!-- Précharge la font -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
-
       html,
       body {
-        /* New radial gradient background */
         background: #000;
         height: 100vh;
         width: 100vw;
@@ -19,7 +29,7 @@
       }
 
       #container {
-        background: transparent; /* Let the body background show through */
+        background: transparent;
         width: 100vw;
         height: 100vh;
         position: absolute;
@@ -53,7 +63,7 @@
         tempCtx.fillStyle = "#fff";
 
         // Handles line breaks
-        var lines = text.split('\n');
+        var lines = text.split("\n");
         var lineHeight = fontSize * 1.1;
         var totalHeight = lines.length * lineHeight;
         var startY = (tempCanvas.height - totalHeight) / 2;
@@ -66,12 +76,9 @@
         }
 
         var points = [];
-        var imageData = tempCtx.getImageData(
-          0,
-          0,
-          tempCanvas.width,
-          tempCanvas.height
-        ).data;
+        var imageData = tempCtx
+          .getImageData(0, 0, tempCanvas.width, tempCanvas.height)
+          .data;
         for (var y = 0; y < tempCanvas.height; y += spacing) {
           for (var x = 0; x < tempCanvas.width; x += spacing) {
             var i = (y * tempCanvas.width + x) * 4;
@@ -180,9 +187,19 @@
         init();
       });
 
-      // Start the animation
-      init();
-      step();
+      // Attendre que la font soit chargée avant d'initialiser
+      if (document.fonts) {
+        document.fonts.load('1em "Luckiest Guy"').then(function () {
+          init();
+          step();
+        });
+      } else {
+        // Fallback si document.fonts n'est pas supporté
+        window.onload = function () {
+          init();
+          step();
+        };
+      }
     </script>
   </body>
 </html>
