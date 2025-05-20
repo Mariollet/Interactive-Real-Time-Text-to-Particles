@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KG Particles</title>
-    <!-- Ajout de la font Bangers -->
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <!-- Ajout de Luckiest Guy et Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@700&display=swap" rel="stylesheet">
     <style>
       html,
       body {
@@ -15,7 +15,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        font-family: 'Bangers', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif;
+        font-family: 'Luckiest Guy', 'Poppins', cursive, sans-serif;
       }
 
       #container {
@@ -94,10 +94,10 @@
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
 
-        // Utilise la font cartoon Bangers
+        // Utilise Luckiest Guy, puis Poppins en secours
         var points = getTextPoints(
           "CASSEZ\nLES CODES",
-          "'Bangers', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif",
+          "'Luckiest Guy', 'Poppins', cursive, sans-serif",
           Math.floor(h / 4),
           SPACING,
           w,
