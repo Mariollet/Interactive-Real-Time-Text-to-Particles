@@ -78,14 +78,14 @@
         tog = true;
         list = [];
 
-        w = canvas.width = 800;
-        h = canvas.height = 300;
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
 
         container.style.marginLeft = Math.round(w * -0.5) + "px";
         container.style.marginTop = Math.round(h * -0.5) + "px";
 
         // ---- Change ici le texte, la police et la taille ----
-        var points = getTextPoints("CASSEZ LES CODES", "Poppins", 240, SPACING);
+        var points = getTextPoints("CASSEZ LES CODES", "Poppins", 100, SPACING);
 
         // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
