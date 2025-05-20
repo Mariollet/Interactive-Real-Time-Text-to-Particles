@@ -10,16 +10,22 @@
       html,
       body {
         background: #111;
-        height: 100%;
+        height: 100vh;
+        width: 100vw;
         margin: 0;
+        padding: 0;
+        overflow: hidden;
       }
 
       #container {
         background: #111;
+        width: 100vw;
+        height: 100vh;
         position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
       }
     </style>
   </head>
@@ -30,26 +36,24 @@
         COLOR = 220,
         DRAG = 0.95,
         EASE = 0.25,
-        SPACING = 4, // espace entre particules
+        SPACING = 4,
         MARGIN = 100;
 
       var container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
 
-      // Nouvelle fonction pour générer les points à partir d'un texte
-      function getTextPoints(text, font, fontSize, spacing) {
-        // Création d'un canvas temporaire
+      function getTextPoints(text, font, fontSize, spacing, width, height) {
         var tempCanvas = document.createElement("canvas");
         var tempCtx = tempCanvas.getContext("2d");
-        tempCanvas.width = 800;
-        tempCanvas.height = 300;
+        tempCanvas.width = width;
+        tempCanvas.height = height;
         tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
         tempCtx.font = fontSize + "px " + font;
         tempCtx.textBaseline = "top";
-        // Centrage horizontal
         var textWidth = tempCtx.measureText(text).width;
         var tx = (tempCanvas.width - textWidth) / 2;
+        var ty = (tempCanvas.height - fontSize) / 2;
         tempCtx.fillStyle = "#fff";
-        tempCtx.fillText(text, tx, 50);
+        tempCtx.fillText(text, tx, ty);
 
         var points = [];
         var imageData = tempCtx.getImageData(
@@ -62,7 +66,6 @@
           for (var x = 0; x < tempCanvas.width; x += spacing) {
             var i = (y * tempCanvas.width + x) * 4;
             if (imageData[i + 3] > 128) {
-              // alpha > 50%
               points.push({ x: x, y: y });
             }
           }
@@ -81,21 +84,18 @@
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
 
-        container.style.marginLeft = Math.round(w * -0.5) + "px";
-        container.style.marginTop = Math.round(h * -0.5) + "px";
-
         // ---- Change ici le texte, la police et la taille ----
-        var points = getTextPoints("CASSEZ LES CODES", "Poppins", 100, SPACING);
+        var points = getTextPoints("CASSEZ LES CODES", "Poppins", Math.floor(h/4), SPACING, w, h);
 
         // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
           p = {
             vx: 0,
             vy: 0,
-            x: points[i].x + MARGIN,
-            y: points[i].y + MARGIN,
-            ox: points[i].x + MARGIN,
-            oy: points[i].y + MARGIN,
+            x: points[i].x,
+            y: points[i].y,
+            ox: points[i].x,
+            oy: points[i].y,
           };
           list.push(p);
         }
@@ -155,6 +155,13 @@
         if (stats) stats.end();
         requestAnimationFrame(step);
       }
+
+      // Handle resize
+      window.addEventListener("resize", function () {
+        // Re-initialize everything on resize
+        container.innerHTML = "";
+        init();
+      });
 
       // Lance l'animation
       init();
