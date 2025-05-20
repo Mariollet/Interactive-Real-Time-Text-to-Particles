@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>30,000 Particles</title>
     <style>
-      @import url("https://fonts.googleapis.com/css?family=Quantico");
+      @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
       html,
       body {
-        background: #111;
+        /* Nouveau fond dégradé radial */
+        background: radial-gradient(circle at 60% 40%, #ffec70 0%, #ff7b54 50%, #3a1c71 100%);
         height: 100vh;
         width: 100vw;
         margin: 0;
@@ -18,7 +19,7 @@
       }
 
       #container {
-        background: #111;
+        background: transparent; /* Laisse voir le fond body */
         width: 100vw;
         height: 100vh;
         position: absolute;
@@ -33,7 +34,7 @@
     <div id="container"></div>
     <script>
       var THICKNESS = Math.pow(80, 2),
-        COLOR = 220,
+        COLOR = 30, // Couleur plus foncée pour contraste
         DRAG = 0.95,
         EASE = 0.25,
         SPACING = 4,
@@ -47,7 +48,7 @@
         tempCanvas.width = width;
         tempCanvas.height = height;
         tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        tempCtx.font = fontSize + "px " + font;
+        tempCtx.font = "bold " + fontSize + "px " + font; // Ajoute bold
         tempCtx.textBaseline = "top";
         var textWidth = tempCtx.measureText(text).width;
         var tx = (tempCanvas.width - textWidth) / 2;
@@ -85,7 +86,14 @@
         h = canvas.height = window.innerHeight;
 
         // ---- Change ici le texte, la police et la taille ----
-        var points = getTextPoints("CASSEZ LES CODES", "Quantico", Math.floor(h/4), SPACING, w, h);
+        var points = getTextPoints(
+          "CASSEZ LES CODES",
+          "Luckiest Guy, cursive",
+          Math.floor(h / 4),
+          SPACING,
+          w,
+          h
+        );
 
         // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
