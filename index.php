@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>30,000 Particles</title>
     <style>
-      @import url("https://fonts.googleapis.com/css?family=Poppins");
+      @import url("https://fonts.googleapis.com/css?family=Poppins:400,600,700");
 
       html,
       body {
