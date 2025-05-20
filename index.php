@@ -217,8 +217,17 @@
     // Menu de sélection de police
     document.getElementById('fontSelect').addEventListener('change', function(e) {
       currentFont = e.target.value;
-      container.innerHTML = "";
-      init();
+      // On attend que la police soit chargée avant de redessiner
+      if (document.fonts && document.fonts.load) {
+        // On charge la police avec une taille arbitraire (ex: 40px)
+        document.fonts.load('bold 40px ' + currentFont).then(function() {
+          container.innerHTML = "";
+          init();
+        });
+      } else {
+        container.innerHTML = "";
+        init();
+      }
     });
 
     // Attendre que les fonts soient chargées avant d'initialiser
