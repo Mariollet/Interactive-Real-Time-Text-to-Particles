@@ -34,7 +34,7 @@
     <div id="container"></div>
     <script>
       var THICKNESS = Math.pow(80, 2),
-        COLOR = 30, // Couleur plus foncée pour contraste
+        COLOR = 255, // Blanc éclatant pour bien ressortir
         DRAG = 0.95,
         EASE = 0.25,
         SPACING = 4,
@@ -154,8 +154,10 @@
           for (var i = 0; i < list.length; i++) {
             p = list[i];
             var n = (~~p.x + ~~p.y * w) * 4;
-            b[n] = b[n + 1] = b[n + 2] = COLOR;
-            b[n + 3] = 255;
+            b[n] = 255;      // Rouge
+            b[n + 1] = 255;  // Vert
+            b[n + 2] = 120;  // Bleu (jaune clair)
+            b[n + 3] = 255;  // Opacité maximale
           }
           ctx.putImageData(a, 0, 0);
         }
