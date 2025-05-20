@@ -31,7 +31,7 @@
             <div class="mt-3">
                 <div>
                     <label for="drag" class="form-label">DRAG: <span id="dragValue"></span></label>
-                    <input type="range" class="form-range" id="drag" min="0.8" max="1" step="0.01" value="0.95">
+                    <input type="range" class="form-range" id="drag" min="0.8" max="1" step="0.01" value="0.96">
                 </div>
                 <div>
                     <label for="ease" class="form-label">EASE: <span id="easeValue"></span></label>
@@ -50,7 +50,7 @@
                 </div>
                 <div>
                     <label for="thickness" class="form-label">THICKNESS: <span id="thicknessValue"></span></label>
-                    <input type="range" class="form-range" id="thickness" min="50" max="200" value="80">
+                    <input type="range" class="form-range" id="thickness" min="50" max="200" value="120">
                 </div>
             </div>
         </div>
