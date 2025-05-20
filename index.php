@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KG Particles</title>
-  <!-- Ajout de Luckiest Guy et Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Oi&display=swap" rel="stylesheet">
+  <!-- Import de plusieurs fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@700&family=Bangers&family=Rubik+Iso&family=Oi&display=swap" rel="stylesheet">
   <style>
     html,
     body {
@@ -16,7 +16,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      font-family: 'Oi', 'Roboto', cursive, sans-serif;
+      font-family: 'Luckiest Guy', 'Poppins', 'Bangers', 'Rubik Iso', 'Oi', cursive, sans-serif;
     }
 
     #container {
@@ -29,11 +29,43 @@
       margin: 0;
       padding: 0;
     }
+
+    #fontMenu {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(30, 30, 30, 0.95);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 16px;
+      z-index: 10;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px #0008;
+      user-select: none;
+    }
+
+    #fontMenu select {
+      font-size: 1rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: none;
+      margin-left: 8px;
+    }
   </style>
 </head>
 
 <body>
   <div id="container"></div>
+  <div id="fontMenu">
+    Police :
+    <select id="fontSelect">
+      <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+      <option value="'Poppins', sans-serif">Poppins</option>
+      <option value="'Bangers', cursive">Bangers</option>
+      <option value="'Rubik Iso', cursive">Rubik Iso</option>
+      <option value="'Oi', cursive">Oi</option>
+    </select>
+  </div>
   <script>
     var THICKNESS = Math.pow(80, 2),
       COLOR = 255,
@@ -43,6 +75,7 @@
       MARGIN = 100;
 
     var container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
+    var currentFont = "'Luckiest Guy', cursive";
 
     // Gère les retours à la ligne pour le texte
     function getTextPoints(text, font, fontSize, spacing, width, height) {
@@ -102,7 +135,7 @@
       // Utilise Luckiest Guy, puis Poppins en secours
       var points = getTextPoints(
         "CASSEZ\nLES CODES",
-        "'Oi', 'Roboto', cursive, sans-serif",
+        currentFont,
         Math.floor(h / 4),
         SPACING,
         w,
@@ -182,7 +215,14 @@
       init();
     });
 
-    // Attendre que la font soit chargée avant d'initialiser
+    // Menu de sélection de police
+    document.getElementById('fontSelect').addEventListener('change', function(e) {
+      currentFont = e.target.value;
+      container.innerHTML = "";
+      init();
+    });
+
+    // Attendre que les fonts soient chargées avant d'initialiser
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function() {
         init();
