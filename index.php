@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KG Particles</title>
     <!-- Ajout de Luckiest Guy et Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:wght@700&display=swap" rel="stylesheet">
     <style>
       html,
       body {
@@ -15,7 +15,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        font-family: 'Luckiest Guy', 'Poppins', cursive, sans-serif;
+        font-family: 'Luckiest Guy', 'Roboto', cursive, sans-serif;
       }
 
       #container {
@@ -97,7 +97,7 @@
         // Utilise Luckiest Guy, puis Poppins en secours
         var points = getTextPoints(
           "CASSEZ\nLES CODES",
-          "'Luckiest Guy', 'Poppins', cursive, sans-serif",
+          "'Luckiest Guy', 'Roboto', cursive, sans-serif",
           Math.floor(h / 4),
           SPACING,
           w,
