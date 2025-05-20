@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KG Particles</title>
   <!-- Import de plusieurs fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Poppins:wght@700&family=Bangers&family=Rubik+Iso&family=Oi&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Bangers&family=Rubik+Iso&family=Oi&display=swap" rel="stylesheet">
   <style>
     html,
     body {
@@ -16,7 +16,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      font-family: 'Luckiest Guy', 'Poppins', 'Bangers', 'Rubik Iso', 'Oi', cursive, sans-serif;
+      font-family: 'Luckiest Guy', 'Bangers', 'Rubik Iso', 'Oi', cursive, sans-serif;
     }
 
     #container {
@@ -60,7 +60,6 @@
     Police :
     <select id="fontSelect">
       <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
-      <option value="'Poppins', sans-serif">Poppins</option>
       <option value="'Bangers', cursive">Bangers</option>
       <option value="'Rubik Iso', cursive">Rubik Iso</option>
       <option value="'Oi', cursive">Oi</option>
