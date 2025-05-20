@@ -10,7 +10,7 @@
       html,
       body {
         /* Nouveau fond dégradé radial */
-        background: radial-gradient(circle at 60% 40%, #ffec70 0%, #ff7b54 50%, #3a1c71 100%);
+        background: radial-gradient(circle at 60% 40%, rgba(255,236,112,0.5) 0%, rgba(255,123,84,0.5) 50%, rgba(58,28,113,0.5) 100%);
         height: 100vh;
         width: 100vw;
         margin: 0;
