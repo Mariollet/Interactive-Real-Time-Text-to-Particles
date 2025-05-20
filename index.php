@@ -14,6 +14,7 @@
 </head>
 
 <body>
+	// This is where the magic happens
     <div id="container"></div>
 
     <div id="fontMenu" class="card p-2">
