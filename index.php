@@ -3,15 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KG Particles</title>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap">
-    </noscript>
+    <title>30,000 Particles</title>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
       html,
       body {
-        background: #000;
+        /* Nouveau fond dégradé radial */
+        background: #111;
         height: 100vh;
         width: 100vw;
         margin: 0;
@@ -20,7 +19,7 @@
       }
 
       #container {
-        background: transparent;
+        background: transparent; /* Laisse voir le fond body */
         width: 100vw;
         height: 100vh;
         position: absolute;
@@ -35,7 +34,7 @@
     <div id="container"></div>
     <script>
       var THICKNESS = Math.pow(80, 2),
-        COLOR = 255, // Darker color for contrast
+        COLOR = 255, // Couleur plus foncée pour contraste
         DRAG = 0.95,
         EASE = 0.25,
         SPACING = 4,
@@ -49,27 +48,21 @@
         tempCanvas.width = width;
         tempCanvas.height = height;
         tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        tempCtx.font = "bold " + fontSize + "px " + font;
+        tempCtx.font = "bold " + fontSize + "px " + font; // Ajoute bold
         tempCtx.textBaseline = "top";
+        var textWidth = tempCtx.measureText(text).width;
+        var tx = (tempCanvas.width - textWidth) / 2;
+        var ty = (tempCanvas.height - fontSize) / 2;
         tempCtx.fillStyle = "#fff";
-
-        // Handles line breaks
-        var lines = text.split("\n");
-        var lineHeight = fontSize * 1.1;
-        var totalHeight = lines.length * lineHeight;
-        var startY = (tempCanvas.height - totalHeight) / 2;
-
-        for (var i = 0; i < lines.length; i++) {
-          var textWidth = tempCtx.measureText(lines[i]).width;
-          var tx = (tempCanvas.width - textWidth) / 2;
-          var ty = startY + i * lineHeight;
-          tempCtx.fillText(lines[i], tx, ty);
-        }
+        tempCtx.fillText(text, tx, ty);
 
         var points = [];
-        var imageData = tempCtx
-          .getImageData(0, 0, tempCanvas.width, tempCanvas.height)
-          .data;
+        var imageData = tempCtx.getImageData(
+          0,
+          0,
+          tempCanvas.width,
+          tempCanvas.height
+        ).data;
         for (var y = 0; y < tempCanvas.height; y += spacing) {
           for (var x = 0; x < tempCanvas.width; x += spacing) {
             var i = (y * tempCanvas.width + x) * 4;
@@ -92,9 +85,9 @@
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
 
-        // ---- Change the text, font, and size here ----
+        // ---- Change ici le texte, la police et la taille ----
         var points = getTextPoints(
-          "CASSEZ\nLES CODES",
+          "CASSEZ LES CODES",
           "Luckiest Guy, cursive",
           Math.floor(h / 4),
           SPACING,
@@ -102,7 +95,7 @@
           h
         );
 
-        // Create particles from points
+        // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
           p = {
             vx: 0,
@@ -178,18 +171,9 @@
         init();
       });
 
-      // Attendre que toutes les fonts soient prêtes AVANT d'initialiser
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(function () {
-          init();
-          step();
-        });
-      } else {
-        window.onload = function () {
-          init();
-          step();
-        };
-      }
+      // Lance l'animation
+      init();
+      step();
     </script>
   </body>
 </html>
