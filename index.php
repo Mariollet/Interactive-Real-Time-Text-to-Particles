@@ -3,24 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>30,000 Particles</title>
+    <title>KG Particles</title>
+    <!-- Ajout de la font Bangers -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
-
       html,
       body {
-        /* Nouveau fond dégradé radial */
         background: #111;
         height: 100vh;
         width: 100vw;
         margin: 0;
         padding: 0;
         overflow: hidden;
-        font-family: 'Luckiest Guy', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif;
+        font-family: 'Bangers', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif;
       }
 
       #container {
-        background: transparent; /* Laisse voir le fond body */
+        background: transparent;
         width: 100vw;
         height: 100vh;
         position: absolute;
@@ -35,7 +34,7 @@
     <div id="container"></div>
     <script>
       var THICKNESS = Math.pow(80, 2),
-        COLOR = 255, // Couleur plus foncée pour contraste
+        COLOR = 255,
         DRAG = 0.95,
         EASE = 0.25,
         SPACING = 4,
@@ -43,19 +42,28 @@
 
       var container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
 
+      // Gère les retours à la ligne pour le texte
       function getTextPoints(text, font, fontSize, spacing, width, height) {
         var tempCanvas = document.createElement("canvas");
         var tempCtx = tempCanvas.getContext("2d");
         tempCanvas.width = width;
         tempCanvas.height = height;
         tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-        tempCtx.font = "bold " + fontSize + "px " + font; // Ajoute bold
+        tempCtx.font = "bold " + fontSize + "px " + font;
         tempCtx.textBaseline = "top";
-        var textWidth = tempCtx.measureText(text).width;
-        var tx = (tempCanvas.width - textWidth) / 2;
-        var ty = (tempCanvas.height - fontSize) / 2;
         tempCtx.fillStyle = "#fff";
-        tempCtx.fillText(text, tx, ty);
+
+        var lines = text.split('\n');
+        var lineHeight = fontSize * 1.1;
+        var totalHeight = lines.length * lineHeight;
+        var startY = (tempCanvas.height - totalHeight) / 2;
+
+        for (var i = 0; i < lines.length; i++) {
+          var textWidth = tempCtx.measureText(lines[i]).width;
+          var tx = (tempCanvas.width - textWidth) / 2;
+          var ty = startY + i * lineHeight;
+          tempCtx.fillText(lines[i], tx, ty);
+        }
 
         var points = [];
         var imageData = tempCtx.getImageData(
@@ -86,17 +94,16 @@
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
 
-        // ---- Change ici le texte, la police et la taille ----
+        // Utilise la font cartoon Bangers
         var points = getTextPoints(
           "CASSEZ\nLES CODES",
-          "Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif",
+          "'Bangers', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif",
           Math.floor(h / 4),
           SPACING,
           w,
           h
         );
 
-        // Crée les particules à partir des points
         for (var i = 0; i < points.length; i++) {
           p = {
             vx: 0,
@@ -165,16 +172,23 @@
         requestAnimationFrame(step);
       }
 
-      // Handle resize
       window.addEventListener("resize", function () {
-        // Re-initialize everything on resize
         container.innerHTML = "";
         init();
       });
 
-      // Lance l'animation
-      init();
-      step();
+      // Attendre que la font soit chargée avant d'initialiser
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          init();
+          step();
+        });
+      } else {
+        window.onload = function () {
+          init();
+          step();
+        };
+      }
     </script>
   </body>
 </html>
