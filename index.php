@@ -16,6 +16,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
+        font-family: 'Luckiest Guy', Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif;
       }
 
       #container {
@@ -87,8 +88,8 @@
 
         // ---- Change ici le texte, la police et la taille ----
         var points = getTextPoints(
-          "CASSEZ LES CODES",
-          "Luckiest Guy, cursive",
+          "CASSEZ\nLES CODES",
+          "Impact, 'Comic Sans MS', 'Arial Black', cursive, sans-serif",
           Math.floor(h / 4),
           SPACING,
           w,
