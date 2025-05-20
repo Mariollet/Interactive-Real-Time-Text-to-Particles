@@ -4,18 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KG Particles</title>
-    <!-- Précharge la font -->
-    <link
-      rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap"
-        rel="stylesheet"
-      />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap">
     </noscript>
     <style>
       html,
@@ -187,14 +178,13 @@
         init();
       });
 
-      // Attendre que la font soit chargée avant d'initialiser
-      if (document.fonts) {
-        document.fonts.load('1em "Luckiest Guy"').then(function () {
+      // Attendre que toutes les fonts soient prêtes AVANT d'initialiser
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
           init();
           step();
         });
       } else {
-        // Fallback si document.fonts n'est pas supporté
         window.onload = function () {
           init();
           step();
