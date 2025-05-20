@@ -1,0 +1,58 @@
+		html,
+		body {
+			background: #111;
+			height: 100vh;
+			width: 100vw;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			font-family: 'Luckiest Guy', 'Bangers', 'Rubik Iso', 'Oi', cursive, sans-serif;
+		}
+
+		#container {
+			background: transparent;
+			width: 100vw;
+			height: 100vh;
+			position: absolute;
+			left: 0;
+			top: 0;
+			margin: 0;
+			padding: 0;
+		}
+
+		#fontMenu {
+			position: fixed;
+			bottom: 20px;
+			left: 20px;
+			z-index: 10;
+			min-width: 220px;
+			max-width: 260px;
+			font-family: 'Roboto', Arial, sans-serif;
+			box-shadow: 0 2px 8px #0008;
+			background: rgba(30, 30, 30, 0.95);
+		}
+
+		#fontMenu label,
+		#fontMenu .form-label {
+			font-family: 'Roboto', Arial, sans-serif;
+		}
+
+		#fontMenu .form-range {
+			accent-color: #0d6efd;
+		}
+
+		#fontMenu .card {
+			background: transparent;
+			border: none;
+		}
+
+		#fontMenu .card-body {
+			padding: 1rem 1rem 0.5rem 1rem;
+		}
+
+		#fontMenu select,
+		#fontMenu input[type="range"] {
+			background: #222;
+			color: #fff;
+			border: none;
+		}
