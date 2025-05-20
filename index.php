@@ -10,7 +10,7 @@
       html,
       body {
         /* Nouveau fond dégradé radial */
-        background: radial-gradient(circle at 60% 40%, rgba(255,236,112,0.5) 0%, rgba(255,123,84,0.5) 50%, rgba(58,28,113,0.5) 100%);
+        background: #000;
         height: 100vh;
         width: 100vw;
         margin: 0;
@@ -34,7 +34,7 @@
     <div id="container"></div>
     <script>
       var THICKNESS = Math.pow(80, 2),
-        COLOR = 255, // Blanc éclatant pour bien ressortir
+        COLOR = 255, // Couleur plus foncée pour contraste
         DRAG = 0.95,
         EASE = 0.25,
         SPACING = 4,
@@ -154,10 +154,8 @@
           for (var i = 0; i < list.length; i++) {
             p = list[i];
             var n = (~~p.x + ~~p.y * w) * 4;
-            b[n] = 255;      // Rouge
-            b[n + 1] = 255;  // Vert
-            b[n + 2] = 120;  // Bleu (jaune clair)
-            b[n + 3] = 255;  // Opacité maximale
+            b[n] = b[n + 1] = b[n + 2] = COLOR;
+            b[n + 3] = 255;
           }
           ctx.putImageData(a, 0, 0);
         }
