@@ -328,7 +328,7 @@ function step() {
                 Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45;
         } else if (mouseTrail.length > 0) {
             // Take several points from the trail to reduce latency
-            let N = 25; // Trail speed
+            let N = 20; // Trail speed
             let pt;
             while (N-- && mouseTrail.length > 0) {
                 pt = mouseTrail.shift();
@@ -494,17 +494,30 @@ function startRandomizeOptions() {
         // Only randomize if the option is checked
         if (!options.RANDOMIZE) return;
 
-        // Randomize fluidity (drag, ease)
-        const drag = (Math.random() * 0.2 + 0.8).toFixed(2); // 0.8 - 1
-        const ease = (Math.random() * 0.5 + 0.05).toFixed(2); // 0.05 - 0.55
+        // Randomize fluidity (drag, ease, thickness)
+        // Get min/max from the DOM for each slider
+        function getRange(id) {
+            const el = document.getElementById(id);
+            return {
+                min: parseFloat(el.min),
+                max: parseFloat(el.max),
+                step: parseFloat(el.step)
+            };
+        }
 
-        // Randomize shape (spacing, thickness)
-        const spacing = Math.floor(Math.random() * 6) + 1; // 1 - 6
-        const thickness = Math.floor(Math.random() * 150) + 50; // 50 - 200
+        const dragRange = getRange('drag');
+        const easeRange = getRange('ease');
+        const thicknessRange = getRange('thickness');
+
+        const drag = (Math.random() * (dragRange.max - dragRange.min) + dragRange.min).toFixed(2);
+        const ease = (Math.random() * (easeRange.max - easeRange.min) + easeRange.min).toFixed(2);
+        // Thickness should be rounded to nearest step (e.g. 5)
+        const thicknessRaw = Math.random() * (thicknessRange.max - thicknessRange.min) + thicknessRange.min;
+        const thickness = Math.round(thicknessRaw / thicknessRange.step) * thicknessRange.step;
 
         // Animate sliders smoothly
-        animateSlider('drag', drag, 400);
-        animateSlider('ease', ease, 400);
+        animateSlider('drag', drag, 200);
+        animateSlider('ease', ease, 200);
         animateSlider('thickness', thickness, 1200);
     }, 1200);
 }
