@@ -88,6 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // --- GLOBALS: Animation state and font ---
 let container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
+let mouseTrail = [];
+let lastMouse = null;
 
 // --- PARTICLE GENERATION: Convert text to points using canvas ---
 // Converts the current text and font settings into an array of points for the particles
@@ -237,11 +239,27 @@ function init(transition) {
     }
 
     // Mouse interaction for particle repulsion
-        container.addEventListener("mousemove", function (e) {
+    container.addEventListener("mousemove", function (e) {
         let bounds = container.getBoundingClientRect();
-        mx = e.clientX - bounds.left;
-        my = e.clientY - bounds.top;
+        let x = e.clientX - bounds.left;
+        let y = e.clientY - bounds.top;
         man = true;
+
+        if (lastMouse) {
+            let dx = x - lastMouse.x;
+            let dy = y - lastMouse.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            let steps = Math.ceil(dist / 2); // 2px between each point
+            for (let i = 1; i <= steps; i++) {
+                mouseTrail.push({
+                    x: lastMouse.x + (dx * i) / steps,
+                    y: lastMouse.y + (dy * i) / steps
+                });
+            }
+        } else {
+            mouseTrail.push({ x, y });
+        }
+        lastMouse = { x, y };
     });
 
     // Enable on mobile devices (touch events)
@@ -304,6 +322,17 @@ function step() {
             my =
                 h * 0.5 +
                 Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45;
+        } else if (mouseTrail.length > 0) {
+            // Take several points from the trail to reduce latency
+            let N = 20; // Trail speed
+            let pt;
+            while (N-- && mouseTrail.length > 0) {
+                pt = mouseTrail.shift();
+            }
+            if (pt) {
+                mx = pt.x;
+                my = pt.y;
+            }
         }
 
         for (let i = 0; i < list.length; i++) {
@@ -337,13 +366,7 @@ function step() {
     requestAnimationFrame(step);
 }
 
-// --- RESPONSIVE: Re-initialize on window resize ---
-// On window resize, clear and re-initialize the canvas and particles
-window.addEventListener("resize", function () {
-    container.innerHTML = "";
-    init();
-});
-
+// --- EASTER EGG: "magic" key sequence triggers background animation ---
 (function () {
     const egg = String.fromCharCode(0x6d, 0x61, 0x67, 0x69, 0x63);
     let buffer = "";
