@@ -1,6 +1,6 @@
 # Interactive-Real-Time-Text-to-Particles
 
-A precise and interactive web application that transforms any text into animated particles in real time.  
+A interactive web application that transforms any text into animated particles in real time.  
 You can customize the font, weight, spacing, thickness, and physical properties (drag, ease) of the particle system, and see the result instantly.
 
 ---
