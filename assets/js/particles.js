@@ -370,7 +370,6 @@ function step() {
     requestAnimationFrame(step);
 }
 
-// --- EASTER EGG: "magic" key sequence triggers background animation ---
 (function () {
     const egg = String.fromCharCode(0x6d, 0x61, 0x67, 0x69, 0x63);
     let buffer = "";
