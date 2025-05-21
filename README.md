@@ -1,24 +1,26 @@
-# Interactive Particles Typography
+# Interactive-Real-Time-Text-to-Particles
 
-A playful and interactive web demo that transforms text into animated particles, with real-time controls for font, spacing, thickness, and more. Built with vanilla JavaScript and Bootstrap, this project lets you explore typography and particle animation in a fun, visual way.
+A precise and interactive web application that transforms any text into animated particles in real time.  
+You can customize the font, weight, spacing, thickness, and physical properties (drag, ease) of the particle system, and see the result instantly.
 
 ---
 
 ## Features
 
-- **Live particle animation**: Text is rendered as a cloud of interactive particles.
-- **Phrase input**: Instantly update the animated text with your own sentence (supports multi-line with `\n`).
-- **Font selection**: Choose from several Google Fonts for instant style changes.
-- **Real-time controls**: Adjust drag, ease, spacing, margin, and thickness with smooth transitions.
-- **Responsive UI**: Clean, mobile-friendly interface using Bootstrap.
-- **Custom favicon**: Upside-down yellow smiley for a playful touch.
-- **GitHub link**: Quick access to the source code from the UI.
+- **Real-time text-to-particles rendering**
+- **Fully interactive controls** for typography and particle physics
+- **Font and weight selection**
+- **Live adjustment** of drag, ease, spacing, and thickness
+- **Responsive UI** (works on desktop and mobile)
+- **Modern, accessible interface**
+- **Custom favicon**: Upside-down yellow smiley for a playful touch
+- **GitHub link**: Quick access to the source code from the UI
 
 ---
 
 ## Demo
 
-> _You can see a live demo by opening `index.php` in your browser (requires a local server for PHP, e.g. [Laragon](https://laragon.org/) or [XAMPP](https://www.apachefriends.org/))._
+Open `index.html` in your browser to see the demo instantly.
 
 ---
 
@@ -31,8 +33,10 @@ A playful and interactive web demo that transforms text into animated particles,
    cd interactive_particles_typography
    ```
 
-2. **Start a local server**  
-   You can use [Laragon](https://laragon.org/), [XAMPP](https://www.apachefriends.org/), or the built-in PHP server:
+2. **Open the app**  
+   Simply open `index.html` in your browser.
+
+   > _If you want to use a local server (optional):_
    ```sh
    php -S localhost:8000
    ```
@@ -42,10 +46,10 @@ A playful and interactive web demo that transforms text into animated particles,
 
 ## Usage
 
-- Use the **TEXT** input to change the animated sentence in real time (use `\n` for line breaks).
+- Use the **Text** input to change the animated sentence in real time (use `\n` for line breaks).
 - Use the **Font** dropdown to change the typeface.
 - Adjust **Drag** and **Ease** for fluidity of the animation.
-- Adjust **Spacing**, **Margin**, and **Thickness** to change the shape and density of the particle text.
+- Adjust **Spacing** and **Thickness** to change the shape and density of the particle text.
 - Move your mouse over the canvas to interact with the particles.
 - The GitHub link in the bottom-right corner leads to this repository.
 
@@ -58,7 +62,10 @@ A playful and interactive web demo that transforms text into animated particles,
 ├── assets/
 │   └── css/
 │       └── index.css      # Custom styles
-├── index.php              # Main HTML/JS file
+│   └── js/
+│       └── menu.js        # Menu logic
+│       └── particles.js   # Particle system
+├── index.html             # Main HTML/JS file
 └── README.md
 ```
 
@@ -67,11 +74,11 @@ A playful and interactive web demo that transforms text into animated particles,
 ## Customization
 
 - **Change the default text**:  
-  Use the TEXT input in the UI, or edit the default value in the HTML (`index.php`).
+  Use the Text input in the UI, or edit the default value in the HTML (`index.html`).
 - **Add more fonts**:  
   Add options to the `<select id="fontSelect">` and update the Google Fonts link in the `<head>`.
 - **Tweak animation**:  
-  Adjust the physics and rendering logic in the JavaScript section of `index.php`.
+  Adjust the physics and rendering logic in `assets/js/particles.js`.
 
 ---
 
@@ -79,7 +86,7 @@ A playful and interactive web demo that transforms text into animated particles,
 
 - [Bootstrap](https://getbootstrap.com/) for UI components
 - [Google Fonts](https://fonts.google.com/) for typography
-- Favicon: Custom SVG smiley (tête à l'envers)
+- Favicon: Custom SVG smiley (upside-down)
 
 ---
 
@@ -96,4 +103,4 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-**Have fun experimenting with interactive particle typography!**
+**Enjoy experimenting with Interactive-Real-Time-Text-to-Particles!**
