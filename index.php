@@ -16,6 +16,8 @@
 </head>
 
 <body>
+	// This is where the magic happens
+
 	<!-- Main canvas container for particles animation -->
 	<div id="container"></div>
 
@@ -26,8 +28,8 @@
 			<div class="mb-2">
 				<label for="fontSelect" class="form-label">FONT: </label>
 				<select id="fontSelect" class="form-select form-select-sm">
-					<option value="'Luckiest Guy', cursive">Luckiest Guy</option>
 					<option value="'Bangers', cursive">Bangers</option>
+					<option value="'Luckiest Guy', cursive">Luckiest Guy</option>
 					<option value="'Rubik Iso', cursive">Rubik Iso</option>
 					<option value="'Oi', cursive">Oi</option>
 				</select>
@@ -142,7 +144,7 @@
 
 		// --- GLOBALS: Animation state and font ---
 		let container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
-		let currentFont = "'Luckiest Guy', cursive";
+		let currentFont = "'Bangers', cursive";
 		let currentSentence = "CASSEZ\nLES CODES";
 
 		// --- PARTICLE GENERATION: Convert text to points using canvas ---
