@@ -1,3 +1,5 @@
+import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js'
+
 // --- UI OPTIONS LOGIC: Centralized slider/option management ---
 // List of all UI controls with their parsing logic and option keys
 const optionIds = [
@@ -139,7 +141,14 @@ function getAdaptiveFontSize() {
     const min = 40;
     const max = 200;
     const base = Math.min(window.innerWidth, window.innerHeight);
-    return Math.max(min, Math.min(max, Math.floor(base / 4)));
+
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        return Math.max(min, Math.min(max, Math.floor(base / 9)));
+    } else {
+        return Math.max(min, Math.min(max, Math.floor(base / 4)));
+    }
 }
 
 // --- ANIMATION STATE: Transition logic ---
@@ -228,16 +237,44 @@ function init(transition) {
     }
 
     // Mouse interaction for particle repulsion
-    container.addEventListener("mousemove", function (e) {
+        container.addEventListener("mousemove", function (e) {
         let bounds = container.getBoundingClientRect();
         mx = e.clientX - bounds.left;
         my = e.clientY - bounds.top;
         man = true;
     });
 
-    // Optional: FPS stats if available
-    if (typeof Stats === "function") {
-        document.body.appendChild((stats = new Stats()).domElement);
+    // Enable on mobile devices (touch events)
+    function isMobile() {
+        return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    }
+
+    if (isMobile()) {
+        container.addEventListener("touchmove", function (e) {
+            if (e.touches && e.touches.length > 0) {
+                let bounds = container.getBoundingClientRect();
+                mx = e.touches[0].clientX - bounds.left;
+                my = e.touches[0].clientY - bounds.top;
+                man = true;
+            }
+        });
+    } else {
+        // FPS stats: show all panels horizontally
+        if (typeof Stats !== "undefined") {
+            stats = new Stats();
+            // Show all panels
+            for (let i = 0; i < stats.dom.children.length; i++) {
+                stats.showPanel(i);
+            }
+            stats.dom.style.position = "fixed";
+            stats.dom.style.top = "0px";
+            stats.dom.style.right = "0px";
+            stats.dom.style.left = "auto";
+            stats.dom.style.zIndex = 9999;
+            stats.dom.style.display = "flex"; // Arrange panels horizontally
+            stats.dom.style.flexDirection = "row";
+            document.body.appendChild(stats.dom);
+        }
     }
 }
 
