@@ -324,7 +324,7 @@ function step() {
                 Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45;
         } else if (mouseTrail.length > 0) {
             // Take several points from the trail to reduce latency
-            let N = 20; // Trail speed
+            let N = 25; // Trail speed
             let pt;
             while (N-- && mouseTrail.length > 0) {
                 pt = mouseTrail.shift();
