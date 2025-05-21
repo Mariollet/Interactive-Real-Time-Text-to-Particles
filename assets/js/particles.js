@@ -259,13 +259,10 @@ function init(transition) {
             }
         });
     } else {
-        // FPS stats: show all panels horizontally
+        // FPS stats: show all panels horizontally and display the second panel
         if (typeof Stats !== "undefined") {
             stats = new Stats();
-            // Show all panels
-            for (let i = 0; i < stats.dom.children.length; i++) {
-                stats.showPanel(i);
-            }
+            stats.showPanel(1);
             stats.dom.style.position = "fixed";
             stats.dom.style.top = "0px";
             stats.dom.style.right = "0px";
