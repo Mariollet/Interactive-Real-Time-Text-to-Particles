@@ -51,11 +51,11 @@
             <button id="menuClose" type="button" class="btn-close btn-close-white ms-2 mt-0" aria-label="Close"></button>
         </div>
         <div class="card-body pt-0 pb-2 px-2">
-            <div class="mb-3">
+            <div class="mb-2">
                 <!-- The textarea value is set via JS for clarity and to avoid HTML line breaks -->
                 <textarea id="sentenceInput" rows="2" class="form-control form-control-sm bg-dark text-white border-0 rounded-2 shadow-sm" autocomplete="off" style="resize:none;"></textarea>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="fontSelect" class="form-label fw-bold small">Font & Weight</label>
                 <div class="d-flex gap-2">
                     <select id="fontSelect" class="form-select form-select-sm bg-dark text-white border-0 shadow-sm">
@@ -77,9 +77,13 @@
                     </select>
                 </div>
             </div>
+			<div class="mb-2">
+				<label for="spacing" class="form-label small">Spacing: <span id="spacingValue"></span></label>
+				<input type="range" class="form-range" id="spacing" min="1" max="6" value="1">
+			</div>
             <hr class="my-2 border-secondary">
-            <div class="mb-3">
-                <label for="drag" class="form-label fw-bold small">Fluidity</label>
+            <div class="mb-2">
+                <label for="drag" class="form-label fw-bold small">Particles</label>
                 <div class="mb-2">
                     <label for="drag" class="form-label small">Drag: <span id="dragValue"></span></label>
                     <input type="range" class="form-range" id="drag" min="0.8" max="1" step="0.01" value="0.95">
@@ -88,18 +92,16 @@
                     <label for="ease" class="form-label small">Ease: <span id="easeValue"></span></label>
                     <input type="range" class="form-range" id="ease" min="0.01" max="1" step="0.01" value="0.2">
                 </div>
-            </div>
-            <hr class="my-2 border-secondary">
-            <div class="mb-2">
-                <label for="spacing" class="form-label fw-bold small">Shape</label>
-                <div class="mb-2">
-                    <label for="spacing" class="form-label small">Spacing: <span id="spacingValue"></span></label>
-                    <input type="range" class="form-range" id="spacing" min="1" max="6" value="1">
-                </div>
                 <div>
                     <label for="thickness" class="form-label small">Thickness: <span id="thicknessValue"></span></label>
                     <input type="range" class="form-range" id="thickness" min="50" max="200" step="5" value="100">
                 </div>
+            </div>
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="randomize" checked>
+                <label class="form-check-label small" for="randomize">
+                    Randomize
+                </label>
             </div>
         </div>
     </div>

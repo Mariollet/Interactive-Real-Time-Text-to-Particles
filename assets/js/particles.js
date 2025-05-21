@@ -12,7 +12,11 @@ const optionIds = [
     { id: 'thickness', parse: v => Math.pow(parseFloat(v), 2), key: 'THICKNESS' }
 ];
 
+optionIds.push({ id: 'randomize', parse: v => !!v, key: 'RANDOMIZE' });
+
 const options = {};
+
+let randomizeInterval = null;
 
 // Update the displayed value next to each slider (for live feedback)
 function updateRangeValue(id) {
@@ -39,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el.addEventListener('input', function () {
             if (el.type === 'range') updateRangeValue(opt.id);
             updateOptionsFromInputs();
-            if (['spacing', 'thickness', 'fontSelect', 'sentenceInput', 'fontWeight'].includes(opt.id)) {
+            if (['spacing', 'fontSelect', 'sentenceInput', 'fontWeight'].includes(opt.id)) {
                 init(true);
             }
         });
@@ -465,3 +469,66 @@ function step() {
         fadeIn();
     }
 })();
+
+// Smoothly animate slider value
+function animateSlider(id, target, duration) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const start = parseFloat(el.value);
+    target = parseFloat(target);
+    const startTime = performance.now();
+
+    function stepAnim(now) {
+        const t = Math.min(1, (now - startTime) / duration);
+        el.value = (start + (target - start) * t).toFixed(el.step && el.step < 1 ? 2 : 0);
+        el.dispatchEvent(new Event('input'));
+        if (t < 1) requestAnimationFrame(stepAnim);
+    }
+    requestAnimationFrame(stepAnim);
+}
+
+// Randomize options at intervals
+function startRandomizeOptions() {
+    if (randomizeInterval) return;
+    randomizeInterval = setInterval(() => {
+        // Only randomize if the option is checked
+        if (!options.RANDOMIZE) return;
+
+        // Randomize fluidity (drag, ease)
+        const drag = (Math.random() * 0.2 + 0.8).toFixed(2); // 0.8 - 1
+        const ease = (Math.random() * 0.5 + 0.05).toFixed(2); // 0.05 - 0.55
+
+        // Randomize shape (spacing, thickness)
+        const spacing = Math.floor(Math.random() * 6) + 1; // 1 - 6
+        const thickness = Math.floor(Math.random() * 150) + 50; // 50 - 200
+
+        // Animate sliders smoothly
+        animateSlider('drag', drag, 400);
+        animateSlider('ease', ease, 400);
+        animateSlider('thickness', thickness, 1200);
+    }, 1200);
+}
+
+function stopRandomizeOptions() {
+    if (randomizeInterval) {
+        clearInterval(randomizeInterval);
+        randomizeInterval = null;
+    }
+}
+
+// Listen for randomize checkbox changes
+document.addEventListener('DOMContentLoaded', function () {
+    const randomize = document.getElementById('randomize');
+    if (randomize) {
+        randomize.addEventListener('change', function () {
+            updateOptionsFromInputs();
+            if (randomize.checked) {
+                startRandomizeOptions();
+            } else {
+                stopRandomizeOptions();
+            }
+        });
+        // If checked on load, start randomizing
+        if (randomize.checked) startRandomizeOptions();
+    }
+});
