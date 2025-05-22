@@ -152,14 +152,14 @@ function getTextPoints(text, font, fontWeight, fontSize, spacing, width, height)
 
 // Calculate a font size that adapts to the screen size (responsive)
 function getAdaptiveFontSize() {
-    const min = 30;
+    const min = 20;
     const max = 200;
     const base = Math.min(window.innerWidth, window.innerHeight);
 
     const isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
     if (isMobile) {
-        return Math.max(min, Math.min(max, Math.floor(base / 12)));
+        return Math.max(min, Math.min(max, Math.floor(base / 40)));
     } else {
         return Math.max(min, Math.min(max, Math.floor(base / 4)));
     }
