@@ -5,7 +5,6 @@
 	╚════██║██║   ██║██║╚██╔╝██║██╔══██║██╔═══╝ ██╔═══╝ ╚════██║
 	███████║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║     ██║     ███████║
 	╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚══════╝
-                                                            
     Interactive Real-Time Text-to-Particles
     (c) 2025 Mariollet - MIT License
 -->
@@ -27,7 +26,7 @@
 </head>
 
 <body>
-	<span class="position-absolute magic z-3">// THIS IS WHERE THE MAGIC HAPPENS</span>
+	<span class="position-absolute magic pe-none z-3">// THIS IS WHERE THE MAGIC HAPPENS</span>
     <div id="container"></div>
 
     <!-- Menu Toggle Button -->
@@ -46,18 +45,18 @@
     <div id="fontMenu" class="card p-3 shadow-lg" style="min-width:260px;max-width:320px;background:rgba(30,30,30,0.98);color:#fff;">
         <div class="d-flex align-items-start mb-3">
             <div class="flex-grow-1">
-                <label for="sentenceInput" class="form-label fw-bold mb-1">Options</label>
+                <label for="sentenceInput" class="form-label fw-bolder mb-1">Options</label>
             </div>
             <button id="menuClose" type="button" class="btn-close btn-close-white ms-2 mt-0" aria-label="Close"></button>
         </div>
         <div class="card-body pt-0 pb-2 px-2">
 			<label class="form-label fw-bold">Text</label>
             <div class="mb-2">
-                <label for="fontSelect" class="form-label small">Content</label>
+                <label for="fontSelect" class="form-label small">Content:</label>
                 <textarea id="sentenceInput" rows="2" class="form-control form-control-sm bg-dark text-white border-0 rounded-2 shadow-sm" autocomplete="off" style="resize:none;"></textarea>
             </div>
             <div class="mb-2">
-                <label for="fontSelect" class="form-label small">Font & Weight</label>
+                <label for="fontSelect" class="form-label small">Font & Weight:</label>
                 <div class="d-flex gap-2">
                     <select id="fontSelect" class="form-select form-select-sm bg-dark text-white border-0 shadow-sm">
                         <option value="'Oi', cursive" selected>Oi</option>
