@@ -88,6 +88,14 @@ document.addEventListener('DOMContentLoaded', function () {
         init();
         step();
     }
+
+    const magicSpan = document.querySelector('.magic');
+    if (magicSpan) {
+        magicSpan.style.cursor = "default";
+        magicSpan.addEventListener('click', function () {
+            launchAnimation();
+        });
+    }
 });
 
 // --- GLOBALS: Animation state and font ---
@@ -370,6 +378,95 @@ function step() {
     requestAnimationFrame(step);
 }
 
+// Move the launchAnimation function to the top-level scope so it is accessible everywhere
+
+function launchAnimation() {
+    const colors = [];
+    for (let h = 0; h < 360; h += 12) {
+        colors.push(`hsl(${h}, 70%, 18%)`);
+    }
+    const body = document.body;
+    let frame = 0;
+    const totalFrames = 60 * 10;
+    let lastColor = getComputedStyle(body).backgroundColor;
+    let currentColor = colors[Math.floor(Math.random() * colors.length)];
+    function lerpColor(a, b, t) {
+        function parseColor(str) {
+            if (str.startsWith('rgb')) {
+                return str.match(/\d+/g).map(Number);
+            } else if (str.startsWith('hsl')) {
+                let [h, s, l] = str.match(/\d+/g).map(Number);
+                s /= 100; l /= 100;
+                let c = (1 - Math.abs(2 * l - 1)) * s;
+                let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+                let m = l - c / 2;
+                let r = 0, g = 0, b = 0;
+                if (h < 60) [r, g, b] = [c, x, 0];
+                else if (h < 120) [r, g, b] = [x, c, 0];
+                else if (h < 180) [r, g, b] = [0, c, x];
+                else if (h < 240) [r, g, b] = [0, x, c];
+                else if (h < 300) [r, g, b] = [x, 0, c];
+                else [r, g, b] = [c, 0, x];
+                return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+            } else if (str.startsWith('#')) {
+                let hex = str.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+                const num = parseInt(hex, 16);
+                return [num >> 16, (num >> 8) & 255, num & 255];
+            }
+            return [17, 17, 17];
+        }
+        const c1 = parseColor(a);
+        const c2 = parseColor(b);
+        return `rgb(${Math.round(c1[0] + (c2[0] - c1[0]) * t)},${Math.round(c1[1] + (c2[1] - c1[1]) * t)},${Math.round(c1[2] + (c2[2] - c1[2]) * t)})`;
+    }
+    let fadeInFrame = 0;
+    const fadeInFrames = 30;
+    function fadeIn() {
+        const tf = fadeInFrame / fadeInFrames;
+        body.style.background = lerpColor(lastColor, currentColor, tf);
+        fadeInFrame++;
+        if (fadeInFrame <= fadeInFrames) {
+            requestAnimationFrame(fadeIn);
+        } else {
+            animateBg();
+        }
+    }
+    function animateBg() {
+        if (frame % 60 === 0) {
+            lastColor = currentColor;
+            let nextColor;
+            do {
+                nextColor = colors[Math.floor(Math.random() * colors.length)];
+            } while (nextColor === lastColor);
+            currentColor = nextColor;
+        }
+        const t = (frame % 60) / 60;
+        body.style.transition = "none";
+        body.style.background = lerpColor(lastColor, currentColor, t);
+        frame++;
+        if (frame < totalFrames) {
+            requestAnimationFrame(animateBg);
+        } else {
+            let fadeFrame = 0;
+            const fadeFrames = 30;
+            const original = "#111";
+            function fadeOut() {
+                const tf = fadeFrame / fadeFrames;
+                body.style.background = lerpColor(currentColor, original, tf);
+                fadeFrame++;
+                if (fadeFrame <= fadeFrames) {
+                    requestAnimationFrame(fadeOut);
+                } else {
+                    body.style.background = "";
+                }
+            }
+            fadeOut();
+        }
+    }
+    fadeIn();
+}
+
 (function () {
     const egg = String.fromCharCode(0x6d, 0x61, 0x67, 0x69, 0x63);
     let buffer = "";
@@ -381,92 +478,6 @@ function step() {
             buffer = "";
         }
     });
-    function launchAnimation() {
-        const colors = [];
-        for (let h = 0; h < 360; h += 12) {
-            colors.push(`hsl(${h}, 70%, 18%)`);
-        }
-        const body = document.body;
-        let frame = 0;
-        const totalFrames = 60 * 10;
-        let lastColor = getComputedStyle(body).backgroundColor;
-        let currentColor = colors[Math.floor(Math.random() * colors.length)];
-        function lerpColor(a, b, t) {
-            function parseColor(str) {
-                if (str.startsWith('rgb')) {
-                    return str.match(/\d+/g).map(Number);
-                } else if (str.startsWith('hsl')) {
-                    let [h, s, l] = str.match(/\d+/g).map(Number);
-                    s /= 100; l /= 100;
-                    let c = (1 - Math.abs(2 * l - 1)) * s;
-                    let x = c * (1 - Math.abs((h / 60) % 2 - 1));
-                    let m = l - c / 2;
-                    let r = 0, g = 0, b = 0;
-                    if (h < 60) [r, g, b] = [c, x, 0];
-                    else if (h < 120) [r, g, b] = [x, c, 0];
-                    else if (h < 180) [r, g, b] = [0, c, x];
-                    else if (h < 240) [r, g, b] = [0, x, c];
-                    else if (h < 300) [r, g, b] = [x, 0, c];
-                    else[r, g, b] = [c, 0, x];
-                    return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
-                } else if (str.startsWith('#')) {
-                    let hex = str.replace('#', '');
-                    if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
-                    const num = parseInt(hex, 16);
-                    return [num >> 16, (num >> 8) & 255, num & 255];
-                }
-                return [17, 17, 17];
-            }
-            const c1 = parseColor(a);
-            const c2 = parseColor(b);
-            return `rgb(${Math.round(c1[0] + (c2[0] - c1[0]) * t)},${Math.round(c1[1] + (c2[1] - c1[1]) * t)},${Math.round(c1[2] + (c2[2] - c1[2]) * t)})`;
-        }
-        let fadeInFrame = 0;
-        const fadeInFrames = 30;
-        function fadeIn() {
-            const tf = fadeInFrame / fadeInFrames;
-            body.style.background = lerpColor(lastColor, currentColor, tf);
-            fadeInFrame++;
-            if (fadeInFrame <= fadeInFrames) {
-                requestAnimationFrame(fadeIn);
-            } else {
-                animateBg();
-            }
-        }
-        function animateBg() {
-            if (frame % 60 === 0) {
-                lastColor = currentColor;
-                let nextColor;
-                do {
-                    nextColor = colors[Math.floor(Math.random() * colors.length)];
-                } while (nextColor === lastColor);
-                currentColor = nextColor;
-            }
-            const t = (frame % 60) / 60;
-            body.style.transition = "none";
-            body.style.background = lerpColor(lastColor, currentColor, t);
-            frame++;
-            if (frame < totalFrames) {
-                requestAnimationFrame(animateBg);
-            } else {
-                let fadeFrame = 0;
-                const fadeFrames = 30;
-                const original = "#111";
-                function fadeOut() {
-                    const tf = fadeFrame / fadeFrames;
-                    body.style.background = lerpColor(currentColor, original, tf);
-                    fadeFrame++;
-                    if (fadeFrame <= fadeFrames) {
-                        requestAnimationFrame(fadeOut);
-                    } else {
-                        body.style.background = "";
-                    }
-                }
-                fadeOut();
-            }
-        }
-        fadeIn();
-    }
 })();
 
 // Smoothly animate slider value
