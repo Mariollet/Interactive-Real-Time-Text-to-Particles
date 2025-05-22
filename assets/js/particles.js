@@ -159,7 +159,7 @@ function getAdaptiveFontSize() {
     const isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
 
     if (isMobile) {
-        return Math.max(min, Math.min(max, Math.floor(base / 9)));
+        return Math.max(min, Math.min(max, Math.floor(base / 12)));
     } else {
         return Math.max(min, Math.min(max, Math.floor(base / 4)));
     }
