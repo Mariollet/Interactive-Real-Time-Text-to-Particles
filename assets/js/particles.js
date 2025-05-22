@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const magicSpan = document.querySelector('.magic');
     if (magicSpan) {
+        magicSpan.style.cursor = "default";
         magicSpan.addEventListener('click', function () {
             launchAnimation();
         });
