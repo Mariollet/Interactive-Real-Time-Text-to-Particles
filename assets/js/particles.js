@@ -113,9 +113,8 @@ let w, h, p;
 let transitionStep = 0;
 let transitionFrames = 40;
 let transitioning = false;
-let mx = window.innerWidth / 2;
-let my = window.innerHeight / 2;
-let realMouse = { x: mx, y: my };
+let mx, my;
+let realMouse = { x: undefined, y: undefined };
 let man = false;
 
 // =======================
@@ -144,6 +143,10 @@ document.addEventListener("mousemove", function (e) {
     const bounds = document.body.getBoundingClientRect();
     realMouse.x = e.clientX - bounds.left;
     realMouse.y = e.clientY - bounds.top;
+    if (typeof mx === "undefined" || typeof my === "undefined") {
+        mx = realMouse.x;
+        my = realMouse.y;
+    }
     man = true;
 });
 document.addEventListener("touchmove", function (e) {
@@ -151,6 +154,10 @@ document.addEventListener("touchmove", function (e) {
         const bounds = document.body.getBoundingClientRect();
         realMouse.x = e.touches[0].clientX - bounds.left;
         realMouse.y = e.touches[0].clientY - bounds.top;
+        if (typeof mx === "undefined" || typeof my === "undefined") {
+            mx = realMouse.x;
+            my = realMouse.y;
+        }
         man = true;
     }
 });
@@ -296,10 +303,14 @@ function step() {
     } else if ((tog = !tog)) {
         // Mouse following logic
         if (!man) {
-            let t = +new Date() * 0.001;
-            mx = window.innerWidth * 0.5 + Math.cos(t * 2.1) * Math.cos(t * 0.9) * window.innerWidth * 0.45;
-            my = window.innerHeight * 0.5 + Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * window.innerHeight * 0.45;
+            // ...idle mode...
         } else {
+            if (
+                typeof mx === "undefined" || typeof my === "undefined" ||
+                typeof realMouse.x === "undefined" || typeof realMouse.y === "undefined"
+            ) {
+                return requestAnimationFrame(step);
+            }
             const dx = realMouse.x - mx;
             const dy = realMouse.y - my;
             const dist = Math.sqrt(dx * dx + dy * dy);
