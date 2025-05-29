@@ -16,7 +16,7 @@ All typography and particle physics parameters are fully configurable via a UI.
 
 ## Demo
 
-Open `index.html` in your browser.
+Open [`https://mariollet.github.io/Interactive-Real-Time-Text-to-Particles/`](https://mariollet.github.io/Interactive-Real-Time-Text-to-Particles/) in your browser.
 
 ---
 
