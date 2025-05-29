@@ -1,6 +1,9 @@
 import Stats from 'https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.js'
 
-// --- UI OPTIONS LOGIC: Centralized slider/option management ---
+// =======================
+// UI OPTIONS & MANAGEMENT
+// =======================
+
 // List of all UI controls with their parsing logic and option keys
 const optionIds = [
     { id: 'fontSelect', parse: v => v, key: 'FONT' },
@@ -9,16 +12,15 @@ const optionIds = [
     { id: 'drag', parse: parseFloat, key: 'DRAG' },
     { id: 'ease', parse: parseFloat, key: 'EASE' },
     { id: 'spacing', parse: parseFloat, key: 'SPACING' },
-    { id: 'thickness', parse: v => Math.pow(parseFloat(v), 2), key: 'THICKNESS' }
+    { id: 'thickness', parse: v => Math.pow(parseFloat(v), 2), key: 'THICKNESS' },
+    { id: 'lerp', parse: parseFloat, key: 'LERP' },
+    { id: 'randomize', parse: v => !!v, key: 'RANDOMIZE' }
 ];
 
-optionIds.push({ id: 'randomize', parse: v => !!v, key: 'RANDOMIZE' });
-
 const options = {};
-
 let randomizeInterval = null;
 
-// Update the displayed value next to each slider (for live feedback)
+// Update the displayed value next to each slider
 function updateRangeValue(id) {
     const input = document.getElementById(id);
     const valueSpan = document.getElementById(id + 'Value');
@@ -33,9 +35,12 @@ function updateOptionsFromInputs() {
     });
 }
 
-// --- UI INIT: Set up event listeners for all controls ---
+// =======================
+// UI EVENT BINDINGS
+// =======================
+
 document.addEventListener('DOMContentLoaded', function () {
-    // UI controls
+    // Bind UI controls
     optionIds.forEach(opt => {
         const el = document.getElementById(opt.id);
         if (!el) return;
@@ -50,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     updateOptionsFromInputs();
 
-    // Sentence input
+    // Sentence input triggers re-init
     const sentenceInput = document.getElementById('sentenceInput');
     if (sentenceInput) {
         sentenceInput.addEventListener('input', function () {
@@ -59,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Font select
+    // Font select triggers font loading and re-init
     const fontSelect = document.getElementById('fontSelect');
     if (fontSelect) {
         fontSelect.addEventListener('change', function (e) {
@@ -89,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         step();
     }
 
+    // Magic animation trigger
     const magicSpan = document.querySelector('.magic');
     if (magicSpan) {
         magicSpan.style.cursor = "default";
@@ -98,12 +104,61 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// --- GLOBALS: Animation state and font ---
-let container, canvas, ctx, stats, list, tog, man, mx, my, w, h, p;
-let mouseTrail = [];
-let lastMouse = null;
+// =======================
+// GLOBALS & STATE
+// =======================
 
-// --- PARTICLE GENERATION: Convert text to points using canvas ---
+let container, canvas, ctx, stats, list, tog;
+let w, h, p;
+let transitionStep = 0;
+let transitionFrames = 40;
+let transitioning = false;
+let mx = window.innerWidth / 2;
+let my = window.innerHeight / 2;
+let realMouse = { x: mx, y: my };
+let man = false;
+
+// =======================
+// PERFORMANCE PANEL (STATS.JS)
+// =======================
+
+if (!window.stats) {
+    window.stats = new Stats();
+    stats = window.stats;
+    stats.showPanel(1);
+    document.body.appendChild(stats.dom);
+    stats.dom.style.position = "fixed";
+    stats.dom.style.top = "0";
+    stats.dom.style.right = "0";
+    if (stats.dom.style.left) stats.dom.style.left = "";
+    stats.dom.style.zIndex = "2000";
+    stats.dom.style.opacity = "0.9";
+    stats.dom.style.cursor = "pointer";
+}
+
+// =======================
+// MOUSE & TOUCH HANDLING
+// =======================
+
+document.addEventListener("mousemove", function (e) {
+    const bounds = document.body.getBoundingClientRect();
+    realMouse.x = e.clientX - bounds.left;
+    realMouse.y = e.clientY - bounds.top;
+    man = true;
+});
+document.addEventListener("touchmove", function (e) {
+    if (e.touches && e.touches.length > 0) {
+        const bounds = document.body.getBoundingClientRect();
+        realMouse.x = e.touches[0].clientX - bounds.left;
+        realMouse.y = e.touches[0].clientY - bounds.top;
+        man = true;
+    }
+});
+
+// =======================
+// PARTICLE GENERATION
+// =======================
+
 // Converts the current text and font settings into an array of points for the particles
 function getTextPoints(text, font, fontWeight, fontSize, spacing, width, height) {
     let tempCanvas = document.createElement("canvas");
@@ -116,11 +171,10 @@ function getTextPoints(text, font, fontWeight, fontSize, spacing, width, height)
     tempCtx.fillStyle = "#fff";
 
     let lines = text.split('\n');
-    let lh = fontSize * 1.1; // Default line height
+    let lh = fontSize * 1.1;
     let totalHeight = lines.length * lh;
     let startY = (tempCanvas.height - totalHeight) / 2;
 
-    // Draw each line of text centered horizontally and vertically
     for (let i = 0; i < lines.length; i++) {
         let textWidth = tempCtx.measureText(lines[i]).width;
         let tx = (tempCanvas.width - textWidth) / 2;
@@ -128,50 +182,34 @@ function getTextPoints(text, font, fontWeight, fontSize, spacing, width, height)
         tempCtx.fillText(lines[i], tx, ty);
     }
 
-    // Sample the canvas to extract points where text pixels are present
     let points = [];
-    let imageData = tempCtx.getImageData(
-        0,
-        0,
-        tempCanvas.width,
-        tempCanvas.height
-    ).data;
+    let imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
     for (let y = 0; y < tempCanvas.height; y += spacing) {
         for (let x = 0; x < tempCanvas.width; x += spacing) {
             let i = (y * tempCanvas.width + x) * 4;
             if (imageData[i + 3] > 128) {
-                points.push({
-                    x: x,
-                    y: y
-                });
+                points.push({ x: x, y: y });
             }
         }
     }
     return points;
 }
 
-// Calculate a font size that adapts to the screen size (responsive)
+// Responsive font size based on screen size
 function getAdaptiveFontSize() {
     const min = 40;
     const max = 200;
     const base = Math.min(window.innerWidth, window.innerHeight);
-
     const isMobile = /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-
-    if (isMobile) {
-        return Math.max(min, Math.min(max, Math.floor(base / 20)));
-    } else {
-        return Math.max(min, Math.min(max, Math.floor(base / 4)));
-    }
+    return isMobile
+        ? Math.max(min, Math.min(max, Math.floor(base / 20)))
+        : Math.max(min, Math.min(max, Math.floor(base / 4)));
 }
 
-// --- ANIMATION STATE: Transition logic ---
-let transitionStep = 0;
-let transitionFrames = 40;
-let transitioning = false;
+// =======================
+// PARTICLE SYSTEM INIT
+// =======================
 
-// --- INIT: Setup or update the particle system, with optional transition ---
-// Initializes or updates the particle system, optionally animating the transition
 function init(transition) {
     container = document.getElementById("container");
     if (!canvas) {
@@ -206,28 +244,20 @@ function init(transition) {
     );
 
     if (transition && list && list.length) {
-        // Animate transition between old and new points
         transitionStep = 0;
         transitioning = true;
-        // If new points are more than old, duplicate last old point
         while (list.length < points.length) {
             let last = list[list.length - 1];
             list.push({
-                vx: 0,
-                vy: 0,
-                x: last ? last.x : 0,
-                y: last ? last.y : 0,
-                ox: last ? last.x : 0,
-                oy: last ? last.y : 0,
-                startx: last ? last.x : 0,
-                starty: last ? last.y : 0
+                vx: 0, vy: 0,
+                x: last ? last.x : 0, y: last ? last.y : 0,
+                ox: last ? last.x : 0, oy: last ? last.y : 0,
+                startx: last ? last.x : 0, starty: last ? last.y : 0
             });
         }
-        // If new points are less, trim the list
         if (list.length > points.length) {
             list = list.slice(0, points.length);
         }
-        // Store start and target positions for transition
         for (let i = 0; i < list.length; i++) {
             list[i].startx = list[i].x;
             list[i].starty = list[i].y;
@@ -235,118 +265,52 @@ function init(transition) {
             list[i].oy = points[i].y;
         }
     } else {
-        // Initial creation of particles
         list = [];
         for (let i = 0; i < points.length; i++) {
             p = {
-                vx: 0,
-                vy: 0,
-                x: points[i].x,
-                y: points[i].y,
-                ox: points[i].x,
-                oy: points[i].y,
+                vx: 0, vy: 0,
+                x: points[i].x, y: points[i].y,
+                ox: points[i].x, oy: points[i].y,
             };
             list.push(p);
         }
     }
-
-    // Mouse interaction for particle repulsion
-    container.addEventListener("mousemove", function (e) {
-        let bounds = container.getBoundingClientRect();
-        let x = e.clientX - bounds.left;
-        let y = e.clientY - bounds.top;
-        man = true;
-
-        if (lastMouse) {
-            let dx = x - lastMouse.x;
-            let dy = y - lastMouse.y;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-            let steps = Math.ceil(dist / 2); // 2px between each point
-            for (let i = 1; i <= steps; i++) {
-                mouseTrail.push({
-                    x: lastMouse.x + (dx * i) / steps,
-                    y: lastMouse.y + (dy * i) / steps
-                });
-            }
-        } else {
-            mouseTrail.push({ x, y });
-        }
-        lastMouse = { x, y };
-    });
-
-    // Enable on mobile devices (touch events)
-    function isMobile() {
-        return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
-    }
-
-    if (isMobile()) {
-        container.addEventListener("touchmove", function (e) {
-            if (e.touches && e.touches.length > 0) {
-                let bounds = container.getBoundingClientRect();
-                mx = e.touches[0].clientX - bounds.left;
-                my = e.touches[0].clientY - bounds.top;
-                man = true;
-            }
-        });
-    } else {
-        // FPS stats: show all panels horizontally and display the second panel
-        if (typeof Stats !== "undefined") {
-            stats = new Stats();
-            stats.showPanel(1);
-            stats.dom.style.position = "fixed";
-            stats.dom.style.top = "0px";
-            stats.dom.style.right = "0px";
-            stats.dom.style.left = "auto";
-            stats.dom.style.zIndex = 9999;
-            stats.dom.style.display = "flex"; // Arrange panels horizontally
-            stats.dom.style.flexDirection = "row";
-            document.body.appendChild(stats.dom);
-        }
-    }
 }
 
-// --- MAIN ANIMATION LOOP: Handles transitions, physics, and rendering ---
-// The main animation loop: handles transitions, physics, and draws the particles
+// =======================
+// MAIN ANIMATION LOOP
+// =======================
+
 function step() {
-    const {
-        THICKNESS,
-        DRAG,
-        EASE
-    } = options;
+    const { THICKNESS, DRAG, EASE, LERP } = options;
     if (stats) stats.begin();
 
     if (transitioning) {
-        // Animate transition between old and new positions
         transitionStep++;
         let t = Math.min(1, transitionStep / transitionFrames);
         for (let i = 0; i < list.length; i++) {
             list[i].x = list[i].startx + (list[i].ox - list[i].startx) * t;
             list[i].y = list[i].starty + (list[i].oy - list[i].starty) * t;
         }
-        if (t >= 1) {
-            transitioning = false;
-        }
+        if (t >= 1) transitioning = false;
     } else if ((tog = !tog)) {
-        // Physics: update particle positions based on mouse and parameters
+        // Mouse following logic
         if (!man) {
             let t = +new Date() * 0.001;
-            mx = w * 0.5 + Math.cos(t * 2.1) * Math.cos(t * 0.9) * w * 0.45;
-            my =
-                h * 0.5 +
-                Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * h * 0.45;
-        } else if (mouseTrail.length > 0) {
-            // Take several points from the trail to reduce latency
-            let N = 20; // Trail speed
-            let pt;
-            while (N-- && mouseTrail.length > 0) {
-                pt = mouseTrail.shift();
-            }
-            if (pt) {
-                mx = pt.x;
-                my = pt.y;
-            }
+            mx = window.innerWidth * 0.5 + Math.cos(t * 2.1) * Math.cos(t * 0.9) * window.innerWidth * 0.45;
+            my = window.innerHeight * 0.5 + Math.sin(t * 3.2) * Math.tan(Math.sin(t * 0.8)) * window.innerHeight * 0.45;
+        } else {
+            const dx = realMouse.x - mx;
+            const dy = realMouse.y - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const maxStep = 40;
+            let t = LERP;
+            if (dist > maxStep) t = maxStep / dist;
+            mx += dx * t;
+            my += dy * t;
         }
 
+        // Particle physics
         for (let i = 0; i < list.length; i++) {
             p = list[i];
             let dx = mx - p.x;
@@ -362,7 +326,7 @@ function step() {
             p.y += (p.vy *= DRAG) + (p.oy - p.y) * EASE;
         }
     } else {
-        // Rendering: draw all particles to the canvas
+        // Rendering
         let a = ctx.createImageData(w, h);
         let b = a.data;
         for (let i = 0; i < list.length; i++) {
@@ -378,18 +342,20 @@ function step() {
     requestAnimationFrame(step);
 }
 
-// Move the launchAnimation function to the top-level scope so it is accessible everywhere
+// =======================
+// BACKGROUND COLOR ANIMATION
+// =======================
 
 function launchAnimation() {
-    const colors = [];
-    for (let h = 0; h < 360; h += 12) {
-        colors.push(`hsl(${h}, 70%, 18%)`);
-    }
+    const colors = [
+        "#009eff", "#fc6482", "#985ff2", "#33e88d", "#ff8669", "#601f9b"
+    ];
     const body = document.body;
     let frame = 0;
     const totalFrames = 60 * 10;
     let lastColor = getComputedStyle(body).backgroundColor;
     let currentColor = colors[Math.floor(Math.random() * colors.length)];
+
     function lerpColor(a, b, t) {
         function parseColor(str) {
             if (str.startsWith('rgb')) {
@@ -420,6 +386,7 @@ function launchAnimation() {
         const c2 = parseColor(b);
         return `rgb(${Math.round(c1[0] + (c2[0] - c1[0]) * t)},${Math.round(c1[1] + (c2[1] - c1[1]) * t)},${Math.round(c1[2] + (c2[2] - c1[2]) * t)})`;
     }
+
     let fadeInFrame = 0;
     const fadeInFrames = 30;
     function fadeIn() {
@@ -467,6 +434,10 @@ function launchAnimation() {
     fadeIn();
 }
 
+// =======================
+// EASTER EGG: Keyboard shortcut
+// =======================
+
 (function () {
     const egg = String.fromCharCode(0x6d, 0x61, 0x67, 0x69, 0x63);
     let buffer = "";
@@ -480,7 +451,11 @@ function launchAnimation() {
     });
 })();
 
-// Smoothly animate slider value
+// =======================
+// SLIDER ANIMATION & RANDOMIZATION
+// =======================
+
+// Animate slider value smoothly
 function animateSlider(id, target, duration) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -501,11 +476,8 @@ function animateSlider(id, target, duration) {
 function startRandomizeOptions() {
     if (randomizeInterval) return;
     randomizeInterval = setInterval(() => {
-        // Only randomize if the option is checked
         if (!options.RANDOMIZE) return;
 
-        // Randomize fluidity (drag, ease, thickness)
-        // Get min/max from the DOM for each slider
         function getRange(id) {
             const el = document.getElementById(id);
             return {
@@ -518,17 +490,22 @@ function startRandomizeOptions() {
         const dragRange = getRange('drag');
         const easeRange = getRange('ease');
         const thicknessRange = getRange('thickness');
+        const lerpRange = getRange('lerp');
 
+        // Use a common percent for thickness and lerp
+        const percent = Math.random();
+        const thicknessValue = thicknessRange.min + percent * (thicknessRange.max - thicknessRange.min);
+        const thickness = Math.round(thicknessValue / thicknessRange.step) * thicknessRange.step;
+        const lerp = (lerpRange.min + percent * (lerpRange.max - lerpRange.min)).toFixed(2);
+
+        // Other sliders are randomized independently
         const drag = (Math.random() * (dragRange.max - dragRange.min) + dragRange.min).toFixed(2);
         const ease = (Math.random() * (easeRange.max - easeRange.min) + easeRange.min).toFixed(2);
-        // Thickness should be rounded to nearest step (e.g. 5)
-        const thicknessRaw = Math.random() * (thicknessRange.max - thicknessRange.min) + thicknessRange.min;
-        const thickness = Math.round(thicknessRaw / thicknessRange.step) * thicknessRange.step;
 
-        // Animate sliders smoothly
-        animateSlider('drag', drag, 200);
-        animateSlider('ease', ease, 200);
+        animateSlider('drag', drag, 420);
+        animateSlider('ease', ease, 420);
         animateSlider('thickness', thickness, 1200);
+        animateSlider('lerp', lerp, 1200);
     }, 1200);
 }
 
@@ -551,7 +528,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 stopRandomizeOptions();
             }
         });
-        // If checked on load, start randomizing
         if (randomize.checked) startRandomizeOptions();
     }
 });
