@@ -1,6 +1,6 @@
 # Interactive Real-Time Text-to-Particles
 
-A web application that transforms any text into animated particles in real time.  
+A web JS application that transforms any text into animated particles in real time.  
 All typography and particle physics parameters are fully configurable via a UI.
 
 ---
@@ -8,7 +8,7 @@ All typography and particle physics parameters are fully configurable via a UI.
 ## Features
 
 - Real-time text-to-particles rendering
-- Interactive controls for font, weight, spacing, drag, ease, thickness, and lerp
+- Interactive controls for text, font, weight, spacing, drag, ease, thickness, and lerp
 - Responsive UI (desktop and mobile)
 - Modern, accessible interface
 
@@ -38,17 +38,6 @@ Then open [http://localhost:8000](http://localhost:8000).
 
 ---
 
-## Usage
-
-- Use the **Text** area to change the animated sentence (supports `\n` for line breaks).
-- Select a **Font** and **Weight**.
-- Adjust **Drag**, **Ease**, **Spacing**, **Thickness**, and **Lerp** for different particle behaviors.
-- Move your mouse or touch the canvas to interact with the particles.
-- Use the **Randomize** checkbox to enable automatic randomization of physics parameters.
-- The GitHub link in the bottom-right corner leads to the repository.
-
----
-
 ## Project Structure
 
 ```
@@ -66,14 +55,6 @@ Then open [http://localhost:8000](http://localhost:8000).
 
 ---
 
-## Customization
-
-- **Default text**: Change the value in the UI or edit the default in `init.js`.
-- **Fonts**: Add options to `<select id="fontSelect">` in `index.html` and update the Google Fonts link in the `<head>`.
-- **Animation logic**: Edit `assets/js/particles.js` for custom physics or rendering.
-
----
-
 ## Dependencies
 
 - [Bootstrap](https://getbootstrap.com/) (UI)
@@ -86,12 +67,6 @@ Then open [http://localhost:8000](http://localhost:8000).
 
 MIT License.  
 See [LICENSE](LICENSE).
-
----
-
-## Author
-
-[github.com/Mariollet](https://github.com/Mariollet)
 
 ---
 
