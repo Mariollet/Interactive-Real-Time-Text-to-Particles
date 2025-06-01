@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Toujours cacher le menu au chargement, mobile ou non
+    // Always hide the menu on load, mobile or not
     showMenu(false);
 
     // Event listeners for toggle and close buttons
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showMenu(false);
     });
 
-    // Optionnel : fermer le menu si on clique à l'extérieur
+    // Optional: close the menu if clicking outside
     document.addEventListener('click', function (e) {
         if (
             fontMenu.style.opacity === '1' &&

@@ -46,7 +46,6 @@ function updateOptionsFromInputs() {
             options[opt.key] = opt.parse(val);
         }
     });
-    console.log("Updated options:", options);
 }
 
 // =======================
@@ -139,6 +138,9 @@ let transitioning = false;
 let mx, my;
 let realMouse = { x: undefined, y: undefined };
 let man = false;
+let shakeHistory = [];
+let shakeTriggered = false;
+let shakeTimeout = null;
 
 // =======================
 // PERFORMANCE PANEL (STATS.JS)
@@ -369,6 +371,66 @@ function step() {
             my += dy * t;
         }
 
+        // --- Shake detection ---
+        if (man && typeof mx === "number" && typeof my === "number") {
+            // Save last 10 positions
+            shakeHistory.push({ x: mx, y: my, t: Date.now() });
+            if (shakeHistory.length > 10) shakeHistory.shift();
+
+            if (shakeHistory.length === 10 && !shakeTriggered) {
+                // Compute total movement and bounding box
+                let totalDist = 0;
+                let minX = shakeHistory[0].x, maxX = shakeHistory[0].x;
+                let minY = shakeHistory[0].y, maxY = shakeHistory[0].y;
+                for (let i = 1; i < shakeHistory.length; i++) {
+                    const dx = shakeHistory[i].x - shakeHistory[i - 1].x;
+                    const dy = shakeHistory[i].y - shakeHistory[i - 1].y;
+                    totalDist += Math.sqrt(dx * dx + dy * dy);
+                    minX = Math.min(minX, shakeHistory[i].x);
+                    maxX = Math.max(maxX, shakeHistory[i].x);
+                    minY = Math.min(minY, shakeHistory[i].y);
+                    maxY = Math.max(maxY, shakeHistory[i].y);
+                }
+                const boxSize = Math.max(maxX - minX, maxY - minY);
+
+                // Thresholds: a lot of movement but in a small area
+                if (totalDist > 250 && boxSize < 100) {
+                    shakeTriggered = true;
+
+                    // Save previous values
+                    const prev = {
+                        THICKNESS: document.getElementById("thickness").value,
+                        EASE: document.getElementById("ease").value,
+                        DRAG: document.getElementById("drag").value,
+                    };
+
+                    // Set sliders to extreme values
+                    animateSlider("thickness", document.getElementById("thickness").max, 200);
+                    animateSlider("ease", document.getElementById("ease").min, 200);
+                    animateSlider("drag", document.getElementById("drag").max, 200);
+
+                    // Activate colored particles visually and in options
+                    const coloredParticles = document.getElementById("coloredParticles");
+                    if (coloredParticles && !coloredParticles.checked) {
+                        coloredParticles.checked = true;
+                        updateOptionsFromInputs();
+                    } else {
+                        // If already checked, still ensure options are up to date
+                        updateOptionsFromInputs();
+                    }
+
+                    // Launch background animation
+                    launchAnimation();
+
+                    // Restore after 10 seconds
+                    clearTimeout(shakeTimeout);
+                    shakeTimeout = setTimeout(() => {
+                        shakeTriggered = false;
+                    }, 10000);
+                }
+            }
+        }
+
         // Particle physics
         for (let i = 0; i < list.length; i++) {
             p = list[i];
@@ -421,24 +483,27 @@ function step() {
                     r = g = blue = 255;
                 } else {
                     // Map smooth velocity to color palette
-                    let colorIndex = easeInVel * (animationColors.length - 1);
-                    let baseIndex = Math.floor(colorIndex);
-                    let nextIndex = Math.min(
-                        baseIndex + 1,
-                        animationColors.length - 1,
-                    );
-                    let t = colorIndex - baseIndex;
+                    let colorIndex = Math.max(0, Math.min(easeInVel || 0, 1)) * (animationColors.length - 1);
+                    let baseIndex = Math.floor(isNaN(colorIndex) ? 0 : colorIndex);
+                    let nextIndex = Math.min(baseIndex + 1, animationColors.length - 1);
 
-                    // Interpolate between two colors
+                    baseIndex = Math.max(0, Math.min(baseIndex, animationColors.length - 1));
+                    nextIndex = Math.max(0, Math.min(nextIndex, animationColors.length - 1));
+
+                    let t = isNaN(colorIndex) ? 0 : colorIndex - baseIndex;
+
                     const color1 = animationColors[baseIndex];
                     const color2 = animationColors[nextIndex];
 
-                    r = Math.floor(color1[0] + (color2[0] - color1[0]) * t);
-                    g = Math.floor(color1[1] + (color2[1] - color1[1]) * t);
-                    blue = Math.floor(color1[2] + (color2[2] - color1[2]) * t);
+                    if (!color1 || !color2) {
+                        r = g = blue = 255;
+                    } else {
+                        r = Math.floor(color1[0] + (color2[0] - color1[0]) * t);
+                        g = Math.floor(color1[1] + (color2[1] - color1[1]) * t);
+                        blue = Math.floor(color1[2] + (color2[2] - color1[2]) * t);
+                    }
                 }
             } else {
-                // Default white particles
                 r = g = blue = 255;
             }
 
