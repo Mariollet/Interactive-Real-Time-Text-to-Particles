@@ -8,7 +8,7 @@ All typography and particle physics parameters are fully configurable via a UI.
 ## Features
 
 - Real-time text-to-particles rendering
-- Interactive controls for text, font, weight, spacing, drag, ease, thickness, and lerp
+- Interactive controls for text, particles and cursor
 - Responsive UI (desktop and mobile)
 - Modern, accessible interface
 
